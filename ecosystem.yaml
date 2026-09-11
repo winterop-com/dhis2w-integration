@@ -1,0 +1,22 @@
+# The integration manifest: every component of the dhis2w ecosystem and the ref it tracks.
+#
+# This is the source of truth for what the integration assembles. The runner reads it to know
+# which pack repositories to clone into checkouts/ and at which ref; the CI workflow reads it
+# the same way. dhis2w itself is not cloned here -- its workspace packages are installed as
+# dependencies (see pyproject.toml) -- but it is listed so the manifest names the whole set.
+
+components:
+  dhis2w:
+    repo: https://github.com/winterop-com/dhis2w
+    ref: main
+    # The host workspace. Installed as dependencies, never cloned, so the runner skips it.
+    role: runtime
+
+  dhis2w-security:
+    repo: https://github.com/winterop-com/dhis2w-security
+    ref: main
+    # The first out-of-repo plugin pack, registered under the dhis2w.plugins.v1 entry-point
+    # group as `security`. Cloned so its own tests run here against the assembled environment.
+    role: pack
+
+  # Future packs are listed here the same way, each cloned and self-tested.

@@ -1,0 +1,138 @@
+[project]
+name = "dhis2w-integration"
+version = "0.1.0"
+description = "The control center for the dhis2w plugin ecosystem: assemble the host and every pack, run everyone's tests together, and host the LLM benchmark harness."
+readme = "README.md"
+authors = [{ name = "Morten Hansen", email = "morten@winterop.com" }]
+requires-python = ">=3.13"
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
+
+# The assembled runtime: the dhis2w surfaces that load a plugin host, plus every pack. The
+# integration is the integration layer, so unlike a pack it may depend on the whole set at once.
+# The third-party entries below are what the benchmark harness needs.
+dependencies = [
+    "dhis2w-cli",
+    "dhis2w-mcp",
+    "dhis2w-fhir",
+    "dhis2w-mcp-router",
+    "dhis2w-security",
+    "claude-agent-sdk>=0.2.141",
+    "fastmcp>=3.4.2",
+    "httpx2>=2.12.0",
+    "pydantic>=2.13.4",
+    "typer>=0.26.7",
+    "pyyaml>=6.0.3",
+]
+
+# There is no [project.scripts] entry: the harness is a family of modules, each its own entry
+# point, run as `python -m dhis2w_integration.bench.<module>`. The host shipped it the same way,
+# and the bench-* make targets name the modules.
+
+[dependency-groups]
+dev = [
+    "dhis2w-core[testing]",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4",
+    "respx>=0.23",
+    "pytest-httpx2>=1.0.0",
+    "ruff>=0.16.3",
+    "mypy>=2.3.1",
+    "pyright>=1.1.411",
+    "types-pyyaml>=6.0.12.20260815",
+]
+
+# Every component rides its tracked branch, unpinned: the integration always assembles the
+# latest ecosystem. The host's packages come from the monorepo by subdirectory; the pack comes
+# from its own repository. dhis2w-core, dhis2w-client and dhis2w-fhir-engine are named here
+# because the surfaces above depend on them and nothing has published them yet, so a resolution
+# that reached PyPI for them would fail.
+[tool.uv.sources]
+dhis2w-cli = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-cli", branch = "main" }
+dhis2w-mcp = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-mcp", branch = "main" }
+dhis2w-mcp-router = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-mcp-router", branch = "main" }
+dhis2w-fhir = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-fhir", branch = "main" }
+dhis2w-fhir-engine = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-fhir-engine", branch = "main" }
+dhis2w-core = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-core", branch = "main" }
+dhis2w-client = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-client", branch = "main" }
+dhis2w-security = { git = "https://github.com/winterop-com/dhis2w-security", branch = "main" }
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = ["E", "W", "F", "I", "D", "SIM", "UP", "B", "TID251"]
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"httpx".msg = "Import httpx2. The original httpx is allowed only in tests, for the Response and Request objects respx consumes."
+"httpcore".msg = "Import httpcore2."
+"urllib.request".msg = "Use httpx2."
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["D", "TID251"]
+"**/__init__.py" = ["D104"]
+"src/**/*.py" = ["D102", "D105", "D107"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+norecursedirs = ["checkouts", ".git", ".venv", "__pycache__", "build", "dist"]
+filterwarnings = [
+  # DHIS2 wire payloads carry plenty of fields not declared on the generated models (which use
+  # `extra="allow"`). pydantic-core re-emits these as a `PydanticSerializationUnexpectedValue`
+  # UserWarning during model_dump. Pin the message regex to that class name so genuine
+  # `Pydantic serializer warnings:` text from other sources still surfaces.
+  "ignore:.*PydanticSerializationUnexpectedValue.*:UserWarning",
+]
+markers = [
+  "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_unused_ignores = true
+strict_equality = true
+
+[tool.pyright]
+include = ["src", "scripts", "tests"]
+# `uv sync` / `uv venv` put the environment here; pyright reads it for third-party types.
+venvPath = "."
+venv = ".venv"
+exclude = ["**/.venv", "**/build", "**/dist", "checkouts"]
+pythonVersion = "3.13"
+typeCheckingMode = "strict"
+useLibraryCodeForTypes = true
+reportPrivateUsage = false
+reportUnusedFunction = false
+reportUnknownMemberType = false
+reportUnknownArgumentType = false
+reportUnknownParameterType = false
+reportUnknownVariableType = false
+reportMissingTypeArgument = false
+reportMissingTypeStubs = false
+reportUnknownLambdaType = false
+reportMissingImports = "warning"
+reportMissingModuleSource = false
+reportDeprecated = "error"

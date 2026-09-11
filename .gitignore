@@ -1,0 +1,12 @@
+checkouts/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+reports/
+.env
+.DS_Store
+dist/
+build/

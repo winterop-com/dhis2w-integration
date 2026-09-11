@@ -1,0 +1,35 @@
+# Assemble the dhis2w ecosystem and run everyone together: the host, every pack's own suite,
+# and the integration's own tests -- one green or red.
+name: integration
+
+on:
+  # The assembled check is expensive -- resolve and install the whole host from git, clone every
+  # pack, run every suite -- and Actions minutes are scarce, so it never runs per push.
+  # Per-commit safety is each repository's own CI; this is the integration truth, caught weekly
+  # and on demand.
+  schedule:
+    # Mondays at 05:00 UTC, so the week opens on a proven ecosystem.
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    # A full assemble plus every suite; a run still going after this is stuck, not slow.
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.0.1
+        with:
+          cache-dependency-glob: "**/pyproject.toml"
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Assemble the ecosystem
+        run: make sync
+
+      - name: Run every suite
+        run: make test

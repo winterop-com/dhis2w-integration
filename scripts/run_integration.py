@@ -52,6 +52,14 @@ class Component(BaseModel):
         return self.checkout_path / "Makefile"
 
     @property
+    def install_paths(self) -> tuple[Path, ...]:
+        """The projects to install: each workspace member under packages/, or the checkout itself."""
+        members = self.checkout_path / "packages"
+        if members.is_dir():
+            return tuple(sorted(path for path in members.iterdir() if (path / "pyproject.toml").is_file()))
+        return (self.checkout_path,)
+
+    @property
     def tests_path(self) -> Path:
         """The component's own test directory inside its checkout."""
         return self.checkout_path / "tests"
@@ -133,11 +141,14 @@ def clone(component: Component) -> None:
 def install(component: Component) -> None:
     """Install a cloned pack editable into the assembled environment, so its plugin is discovered.
 
+    A pack that is a workspace installs each member under packages/.
+
     `--no-deps` keeps the pack from pulling a published host over the one already installed here:
     the assembled environment is the ecosystem, and a pack's own pins must not reshape it.
     """
     typer.echo(f"  install {component.name}  (editable, --no-deps)")
-    subprocess.run(["uv", "pip", "install", "--no-deps", "-e", str(component.checkout_path)], check=True)
+    editables = [argument for path in component.install_paths for argument in ("-e", str(path))]
+    subprocess.run(["uv", "pip", "install", "--no-deps", *editables], check=True)
 
 
 def run_component_suite(component: Component) -> StepResult:

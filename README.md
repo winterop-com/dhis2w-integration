@@ -51,9 +51,12 @@ A pack whose checkout is already present is reused, and one carrying local chang
 it is -- which is what lets a local run substitute a sibling working tree for a clone. Other
 targets: `make sync`, `make clone`, `make bench`, `make lint`, `make clean`.
 
-No `uv.lock` is committed. Nothing in the ecosystem is published, the sources ride `main`, and a
-committed lock would freeze an ecosystem that moves every day; `make lock` resolves it fresh and
-`make sync` installs from it.
+No `uv.lock` is committed. The sources ride `main`, and a committed lock would freeze an
+ecosystem that moves every day; `make lock` resolves it fresh and `make sync` installs from it.
+
+This repository carries the same version as the dhis2w host and every pack. At each release it
+moves to the new number, and `make test` runs against the new tips before the release is called
+done.
 
 ## The benchmark harness
 

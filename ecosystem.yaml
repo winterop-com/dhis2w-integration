@@ -32,4 +32,11 @@ components:
     # plugin that puts every built-in plugin's tools on the server.
     role: pack
 
+  dhis2w-fhir:
+    repo: https://github.com/winterop-com/dhis2w-fhir
+    ref: main
+    # `d2w fhir`, the FHIRPath/CQL engine and the capture server, as one workspace. Registered as
+    # `fhir`.
+    role: pack
+
   # Future packs are listed here the same way, each cloned and self-tested.

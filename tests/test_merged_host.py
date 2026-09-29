@@ -18,8 +18,7 @@ from fastmcp import FastMCP
 #: Every plugin tree the host supports. A pack that binds only some of them shows up here.
 VERSION_KEYS = ["v41", "v42", "v43"]
 
-#: The contributions that must be present in every tree: a built-in, the FHIR surface shipped in
-#: the host workspace, and each out-of-repo pack.
+#: The contributions that must be present in every tree: a built-in, and each out-of-repo pack.
 EXPECTED_NAMES = ["metadata", "fhir", "security", "browser", "mcp"]
 
 

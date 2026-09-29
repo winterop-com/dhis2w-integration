@@ -22,13 +22,6 @@ VERSION_KEYS = ["v41", "v42", "v43"]
 #: the host workspace, and the out-of-repo pack.
 EXPECTED_NAMES = ["metadata", "fhir", "security"]
 
-# `security` is contributed twice in this environment: dhis2w-core still ships a built-in
-# security plugin, and dhis2w-security contributes the same name from its own repository. The
-# pack supersedes the built-in, which leaves dhis2w-core in the follow-up to
-# winterop-com/dhis2w#790 (the branch that put the plugin host on pluginkit). Until that lands,
-# it is the one duplicate the assembled host is allowed to carry.
-KNOWN_DUPLICATE_NAMES = {"security"}
-
 
 @pytest.fixture(scope="session", params=VERSION_KEYS)
 def host(request: pytest.FixtureRequest) -> PluginHost:
@@ -53,7 +46,7 @@ def test_no_plugin_failed_to_load(host: PluginHost) -> None:
 
 def test_the_contribution_names_are_unique(host: PluginHost) -> None:
     duplicated = {name for name, count in Counter(host.names).items() if count > 1}
-    assert duplicated <= KNOWN_DUPLICATE_NAMES, f"{host.version_key} contributes {duplicated} more than once"
+    assert not duplicated, f"{host.version_key} contributes {duplicated} more than once"
 
 
 def test_every_contribution_mounts_on_one_typer_application(host: PluginHost) -> None:
@@ -66,7 +59,7 @@ def test_every_contribution_mounts_on_one_typer_application(host: PluginHost) ->
     mounted += [command.name for command in application.registered_commands]
     assert mounted, f"{host.version_key} mounted no command group at all"
     duplicated = {name for name, count in Counter(mounted).items() if count > 1}
-    assert duplicated <= KNOWN_DUPLICATE_NAMES, f"{host.version_key} mounts the {duplicated} command group twice"
+    assert not duplicated, f"{host.version_key} mounts the {duplicated} command group twice"
 
 
 async def test_every_contribution_registers_on_one_mcp_server(host: PluginHost) -> None:
@@ -78,6 +71,5 @@ async def test_every_contribution_registers_on_one_mcp_server(host: PluginHost) 
         for tool in await server.list_tools():
             owners.setdefault(tool.name, []).append(contribution.name)
     assert owners, f"{host.version_key} registered no MCP tool at all"
-    collisions = {name: claimants for name, claimants in owners.items() if len(claimants) > 1}
-    unexpected = {name for name, claimants in collisions.items() if not set(claimants) <= KNOWN_DUPLICATE_NAMES}
-    assert not unexpected, f"{host.version_key} registers {sorted(unexpected)} from more than one contribution"
+    collisions = sorted(name for name, claimants in owners.items() if len(claimants) > 1)
+    assert not collisions, f"{host.version_key} registers {collisions} from more than one contribution"

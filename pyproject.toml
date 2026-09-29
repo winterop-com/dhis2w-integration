@@ -1,6 +1,6 @@
 [project]
 name = "dhis2w-integration"
-version = "0.1.0"
+version = "1.28.1"
 description = "The control center for the dhis2w plugin ecosystem: assemble the host and every pack, run everyone's tests together, and host the LLM benchmark harness."
 readme = "README.md"
 authors = [{ name = "Morten Hansen", email = "morten@winterop.com" }]
@@ -43,10 +43,10 @@ dev = [
 ]
 
 # Every component rides its tracked branch, unpinned: the integration always assembles the
-# latest ecosystem. The host's packages come from the monorepo by subdirectory; the pack comes
-# from its own repository. dhis2w-core, dhis2w-client and dhis2w-fhir-engine are named here
-# because the surfaces above depend on them and nothing has published them yet, so a resolution
-# that reached PyPI for them would fail.
+# latest ecosystem, not the latest release. The host's packages come from the host repository by
+# subdirectory, and each pack from its own repository. dhis2w-core, dhis2w-client and
+# dhis2w-fhir-engine are named here as well as the surfaces above, so the host's transitive
+# packages come from `main` too rather than from their last PyPI release.
 [tool.uv.sources]
 dhis2w-cli = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-cli", branch = "main" }
 dhis2w-mcp = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-mcp", branch = "main" }

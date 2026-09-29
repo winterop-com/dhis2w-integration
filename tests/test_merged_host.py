@@ -19,8 +19,8 @@ from fastmcp import FastMCP
 VERSION_KEYS = ["v41", "v42", "v43"]
 
 #: The contributions that must be present in every tree: a built-in, the FHIR surface shipped in
-#: the host workspace, and the out-of-repo pack.
-EXPECTED_NAMES = ["metadata", "fhir", "security"]
+#: the host workspace, and each out-of-repo pack.
+EXPECTED_NAMES = ["metadata", "fhir", "security", "browser", "mcp"]
 
 
 @pytest.fixture(scope="session", params=VERSION_KEYS)

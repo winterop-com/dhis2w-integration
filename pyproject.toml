@@ -1,6 +1,6 @@
 [project]
 name = "dhis2w-integration"
-version = "1.28.1"
+version = "1.29.0"
 description = "The control center for the dhis2w plugin ecosystem: assemble the host and every pack, run everyone's tests together, and host the LLM benchmark harness."
 readme = "README.md"
 authors = [{ name = "Morten Hansen", email = "morten@winterop.com" }]
@@ -23,6 +23,7 @@ dependencies = [
     "pydantic>=2.13.4",
     "typer>=0.26.7",
     "pyyaml>=6.0.3",
+    "dhis2w-browser",
 ]
 
 # There is no [project.scripts] entry: the harness is a family of modules, each its own entry
@@ -49,13 +50,14 @@ dev = [
 # packages come from `main` too rather than from their last PyPI release.
 [tool.uv.sources]
 dhis2w-cli = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-cli", branch = "main" }
-dhis2w-mcp = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-mcp", branch = "main" }
-dhis2w-mcp-router = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-mcp-router", branch = "main" }
 dhis2w-fhir = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-fhir", branch = "main" }
 dhis2w-fhir-engine = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-fhir-engine", branch = "main" }
 dhis2w-core = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-core", branch = "main" }
 dhis2w-client = { git = "https://github.com/winterop-com/dhis2w", subdirectory = "packages/dhis2w-client", branch = "main" }
 dhis2w-security = { git = "https://github.com/winterop-com/dhis2w-security", branch = "main" }
+dhis2w-browser = { git = "https://github.com/winterop-com/dhis2w-browser", branch = "main" }
+dhis2w-mcp = { git = "https://github.com/winterop-com/dhis2w-mcp", subdirectory = "packages/dhis2w-mcp", branch = "main" }
+dhis2w-mcp-router = { git = "https://github.com/winterop-com/dhis2w-mcp", subdirectory = "packages/dhis2w-mcp-router", branch = "main" }
 
 [build-system]
 requires = ["uv_build>=0.12.9,<0.13.0"]

@@ -19,4 +19,17 @@ components:
     # group as `security`. Cloned so its own tests run here against the assembled environment.
     role: pack
 
+  dhis2w-browser:
+    repo: https://github.com/winterop-com/dhis2w-browser
+    ref: main
+    # `d2w browser`, registered as `browser`: the Playwright automation.
+    role: pack
+
+  dhis2w-mcp:
+    repo: https://github.com/winterop-com/dhis2w-mcp
+    ref: main
+    # The MCP server, the CLI bridge and the router, as one workspace. Registered as `mcp`, the
+    # plugin that puts every built-in plugin's tools on the server.
+    role: pack
+
   # Future packs are listed here the same way, each cloned and self-tested.

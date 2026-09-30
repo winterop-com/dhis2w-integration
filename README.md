@@ -30,8 +30,8 @@ that one FastMCP server takes every tool.
 - **`src/dhis2w_integration/bench/`** -- the LLM benchmark harness: local models and cloud Claude
   driven over the `d2w` CLI, the mcp-bridge, the full MCP server and the MCP router. It belongs
   here because a benchmark measures the assembled surface, which only this repository holds.
-- **`tests/`** -- the integration's own tests: the merged plugin host is coherent for v41, v42
-  and v43, and the harness's pure functions still hold.
+- **`tests/`** -- the integration's own tests: the merged plugin host is coherent for v41, v42,
+  v43 and v44, and the harness's pure functions still hold.
 
 ## Running it locally
 

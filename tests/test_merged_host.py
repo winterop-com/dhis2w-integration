@@ -16,7 +16,7 @@ from dhis2w_core.plugin import PluginHost, load_plugin_host
 from fastmcp import FastMCP
 
 #: Every plugin tree the host supports. A pack that binds only some of them shows up here.
-VERSION_KEYS = ["v41", "v42", "v43"]
+VERSION_KEYS = ["v41", "v42", "v43", "v44"]
 
 #: The contributions that must be present in every tree: a built-in, and each out-of-repo pack.
 EXPECTED_NAMES = ["metadata", "fhir", "security", "browser", "mcp"]

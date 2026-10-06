@@ -1,6 +1,6 @@
 [project]
 name = "dhis2w-integration"
-version = "1.31.1"
+version = "1.32.0"
 description = "The control center for the dhis2w plugin ecosystem: assemble the host and every pack, run everyone's tests together, and host the LLM benchmark harness."
 readme = "README.md"
 authors = [{ name = "Morten Hansen", email = "morten@winterop.com" }]

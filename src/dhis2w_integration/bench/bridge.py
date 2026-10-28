@@ -25,6 +25,7 @@ import json
 import os
 import shlex
 import sys
+import tempfile
 import time
 from collections.abc import Sequence
 from pathlib import Path
@@ -45,7 +46,7 @@ BACKEND = get_backend()
 LM = BACKEND.chat_url
 #: This repository root, the environment `uv run --directory` spawns the servers from.
 REPO = str(Path(__file__).resolve().parents[3])
-RESULTS = "/tmp/bench_bridge_results.jsonl"
+RESULTS = str(Path(tempfile.gettempdir()) / "bench_bridge_results.jsonl")
 SYSTEM_PROMPT = (
     "You are a DHIS2 operator with one tool, dhis2_cli, that runs the d2w CLI. Always use the "
     "tool to get real data; never answer from memory. When you have the answer, reply in plain "

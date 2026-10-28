@@ -70,7 +70,7 @@ line-length = 120
 
 [tool.ruff.lint]
 fixable = ["ALL"]
-select = ["E", "W", "F", "I", "D", "SIM", "UP", "B", "TID251"]
+select = ["E", "W", "F", "I", "D", "SIM", "UP", "B", "TID251", "S"]
 ignore = ["D203", "D213"]
 
 [tool.ruff.lint.pydocstyle]
@@ -82,7 +82,10 @@ convention = "google"
 "urllib.request".msg = "Use httpx2."
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["D", "TID251"]
+"tests/**/*.py" = ["D", "TID251", "S101", "S104", "S105", "S106", "S107", "S108", "S603", "S607"]
+"scripts/**/*.py" = ["S603", "S607"]
+# The benchmarks drive fixed local tools (`lms`, `uv run d2w`) and a worker on `sys.executable`.
+"src/dhis2w_integration/bench/**/*.py" = ["S603", "S607"]
 "**/__init__.py" = ["D104"]
 "src/**/*.py" = ["D102", "D105", "D107"]
 

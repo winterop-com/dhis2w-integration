@@ -24,6 +24,7 @@ import asyncio
 import json
 import os
 import sys
+import tempfile
 import time
 from collections.abc import Sequence
 from pathlib import Path
@@ -41,7 +42,7 @@ BACKEND = get_backend()
 LM = BACKEND.chat_url
 #: This repository root, the environment `uv run --directory` spawns the servers from.
 REPO = str(Path(__file__).resolve().parents[3])
-RESULTS = "/tmp/bench_mcp_results.jsonl"
+RESULTS = str(Path(tempfile.gettempdir()) / "bench_mcp_results.jsonl")
 
 
 def _env_int(name: str, default: int) -> int:

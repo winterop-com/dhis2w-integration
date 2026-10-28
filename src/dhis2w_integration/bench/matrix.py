@@ -22,6 +22,7 @@ import argparse
 import asyncio
 import json
 import shlex
+import tempfile
 import time
 from pathlib import Path
 
@@ -38,7 +39,7 @@ BACKEND = get_backend()
 LM = BACKEND.chat_url
 #: This repository root, the environment `uv run --directory` spawns the servers from.
 REPO = str(Path(__file__).resolve().parents[3])
-RESULTS = "/tmp/cli_matrix.jsonl"
+RESULTS = str(Path(tempfile.gettempdir()) / "cli_matrix.jsonl")
 OUT = "reports/cli-matrix.md"
 PROFILE = "play42"
 MAX_STEPS = 4

@@ -63,7 +63,7 @@ ORACLE = os.environ.get("BENCH_ORACLE", "").strip()
 #: Local-inference backend (LM Studio by default; override with MODEL_BACKEND).
 BACKEND = get_backend()
 LM = BACKEND.chat_url
-RESULTS = "/tmp/bench_general_results.jsonl"
+RESULTS = str(Path(tempfile.gettempdir()) / "bench_general_results.jsonl")
 
 
 def _env_int(name: str, default: int) -> int:

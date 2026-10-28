@@ -19,7 +19,9 @@ from __future__ import annotations
 import asyncio
 import os
 import sys
+import tempfile
 import time
+from pathlib import Path
 
 import httpx2
 from pydantic import BaseModel, ConfigDict
@@ -28,7 +30,7 @@ from dhis2w_integration.bench.backend import get_backend
 
 BACKEND = get_backend()
 LM = BACKEND.chat_url
-RESULTS = "/tmp/bench_longcontext_results.jsonl"
+RESULTS = str(Path(tempfile.gettempdir()) / "bench_longcontext_results.jsonl")
 
 
 def _env_int(name: str, default: int) -> int:
@@ -61,7 +63,7 @@ LENGTHS: tuple[int, ...] = (2000, 16000, 64000, 100000)
 
 #: The planted fact and its retrieval question. The secret never appears in the filler.
 _NEEDLE_TAG = "Zephyr-9"
-_NEEDLE_SECRET = "QX-4821-VAULT"
+_NEEDLE_SECRET = "QX-4821-VAULT"  # noqa: S105 - planted benchmark fact, not a credential
 _NEEDLE = f"IMPORTANT FACT: the access code for vault {_NEEDLE_TAG} is {_NEEDLE_SECRET}."
 _QUESTION = f"Using only the log above, what is the access code for vault {_NEEDLE_TAG}? Answer with only the code."
 _SYSTEM = "You answer strictly from the provided text. If a fact is stated in it, report it exactly."
